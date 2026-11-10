@@ -214,28 +214,31 @@ export function Shell() {
                 <BrandMark />
                 <span>DoRoboty.ai</span>
               </Link>
-              <nav aria-label="Główna nawigacja" className="flex items-center gap-2 sm:gap-5">
+              <nav
+                aria-label="Główna nawigacja"
+                className="flex items-center gap-2 sm:gap-3 lg:gap-5"
+              >
                 {navigation.map((item) => (
                   <Link
                     key={item.to}
-                    className="hidden text-sm font-medium text-muted-foreground transition-colors hover:text-foreground md:inline"
+                    className="hidden text-sm font-medium whitespace-nowrap text-muted-foreground transition-colors hover:text-foreground md:inline"
                     to={item.to}
                   >
                     {item.label}
                   </Link>
                 ))}
                 {person ? (
-                  <div className="flex items-center gap-[var(--gui-space-xs)] sm:gap-[var(--gui-space-m)]">
+                  <div className="flex items-center gap-[var(--gui-space-xs)] sm:gap-[var(--gui-space-s)] lg:gap-[var(--gui-space-m)]">
                     {person.role === "candidate" && (
                       <>
                         <Link
-                          className="hidden text-sm font-medium text-muted-foreground md:inline"
+                          className="hidden text-sm font-medium whitespace-nowrap text-muted-foreground lg:inline"
                           to="/app/aplikacje"
                         >
                           Aplikacje
                         </Link>
                         <Link
-                          className="hidden text-sm font-medium text-muted-foreground md:inline"
+                          className="hidden text-sm font-medium whitespace-nowrap text-muted-foreground lg:inline"
                           to="/app/profil"
                         >
                           Profil

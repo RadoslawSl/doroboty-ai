@@ -40,7 +40,7 @@ textarea:focus-visible {
   outline-offset: 4px;
 }
 .brand {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--gui-font-ui);
   font-weight: 700;
   letter-spacing: -1.2px;
 }
@@ -115,7 +115,7 @@ footer {
   font-weight: 600;
 }
 .prototype-notice {
-  background: #ffe0f7;
+  background: #dcecf6;
   border: 1px solid var(--foreground);
   border-radius: 18px;
   line-height: 1.6;
@@ -137,7 +137,7 @@ footer {
   padding-block: 24px;
 }
 .workspace-avatar {
-  background: #ffe0f7;
+  background: #dcecf6;
   border-radius: 10px;
   flex-shrink: 0;
 }

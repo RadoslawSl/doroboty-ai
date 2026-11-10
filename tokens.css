@@ -9,9 +9,9 @@
   --icon-regular-display: inline;
   --icon-bold-display: none;
 
-  --gui-font-brand: "Geist Serif", Georgia, serif;
-  --gui-font-ui: Arial, Helvetica, system-ui, sans-serif;
-  --gui-font-editorial: "Geist Serif", Georgia, serif;
+  --gui-font-brand: Montserrat, Arial, Helvetica, sans-serif;
+  --gui-font-ui: Montserrat, Arial, Helvetica, system-ui, sans-serif;
+  --gui-font-editorial: Montserrat, Arial, Helvetica, sans-serif;
   --gui-font-data: Arial, Helvetica, system-ui, sans-serif;
   --font-ui: var(--gui-font-ui);
   --font-brand: var(--gui-font-brand);
@@ -115,7 +115,7 @@
   --gui-error: #fc032d;
   --gui-neutral-10-transparent: #00000033;
   --gui-backdrop: #18181899;
-  --gui-color-1-transparent: #ffe0f7;
+  --gui-color-1-transparent: #dcecf6;
   --gui-success-transparent: #00906c33;
   --gui-error-transparent: #fc032d33;
 
