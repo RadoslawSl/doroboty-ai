@@ -75,13 +75,15 @@
   font-size: 13px;
   line-height: 1.6;
 }
-.record-actions {
+.record-actions,
+.record-compare {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
   margin-top: 14px;
 }
-.record-actions [data-slot="button"] {
+.record-actions [data-slot="button"],
+.record-compare [data-slot="button"] {
   max-width: 100%;
   white-space: normal;
   font-size: 14px;

@@ -44,7 +44,7 @@ export function RecruitingApplication({ application }: { application: Applicatio
                 <p>
                   <MarkedAnswer text={application.answer} assistant={assistant} />
                 </p>
-                <div className="record-actions">
+                <div className="record-compare">
                   <Button
                     variant="outline"
                     aria-expanded={comparing}
