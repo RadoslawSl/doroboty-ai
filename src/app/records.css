@@ -337,3 +337,84 @@
   border-radius: 10px;
   background: var(--gui-canvas);
 }
+
+/* Employer "Co kandydat zrobił sam" card (discovery decision A, test E1) and assistant marking. */
+.recruiting-lead {
+  margin-bottom: 28px;
+}
+.contribution-card {
+  padding: 24px 28px;
+  border: 1px solid #126b9e;
+  border-radius: 24px;
+  background: #126b9e;
+  color: white;
+}
+.contribution-card h2 {
+  color: white;
+  font-size: 26px;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+  margin-bottom: 14px;
+}
+.contribution-quote {
+  margin: 0 0 16px;
+  font-size: 18px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+blockquote.contribution-quote {
+  font-style: italic;
+}
+.contribution-empty {
+  color: rgb(255 255 255 / 90%);
+  font-size: 16px;
+}
+.contribution-card .record-caption {
+  color: rgb(255 255 255 / 90%);
+}
+.contribution-label {
+  display: inline-block;
+  max-width: 100%;
+  margin-bottom: 12px;
+  padding: 4px 12px;
+  border: 1px solid var(--gui-text);
+  border-radius: 999px;
+  background: white;
+  color: var(--gui-text);
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.contribution-label[data-kind="none"] {
+  border-style: dashed;
+  color: var(--gui-text-muted);
+}
+.assistant-sentence {
+  color: var(--gui-text-muted);
+  text-decoration: underline dotted;
+  text-underline-offset: 4px;
+}
+.record-reading .record-caption + p {
+  margin-top: 10px;
+}
+.candidate-own-text {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #d8d5d1;
+}
+.candidate-own-text h4 {
+  margin-bottom: 10px;
+  font-size: 14px;
+  font-weight: 600;
+}
+@media (max-width: 600px) {
+  .contribution-card {
+    padding: 20px;
+  }
+  .contribution-card h2 {
+    font-size: 22px;
+  }
+  .contribution-quote {
+    font-size: 16px;
+  }
+}

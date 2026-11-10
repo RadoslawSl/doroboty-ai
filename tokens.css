@@ -97,7 +97,7 @@
   --gui-neutral-9: #333333;
   --gui-neutral-9-transparent: #33333333;
   --gui-neutral-10: #181818;
-  --gui-color-1: #ff90e8;
+  --gui-color-1: #b3245a;
   --gui-color-2: #181818;
   --gui-color-2-transparent: #085e5533;
   --gui-color-3: #ffe45b;
@@ -127,9 +127,9 @@
   --gui-text-muted-accessible: var(--gui-neutral-8);
   --gui-edge: #181818;
   --gui-accent: var(--gui-color-1);
-  --gui-accent-text: #181818;
+  --gui-accent-text: #ffffff;
   /* Dark labels on pink actions. */
-  --gui-accent-text-accessible: var(--gui-neutral-10);
+  --gui-accent-text-accessible: #ffffff;
   --gui-danger: var(--gui-error);
   --gui-focus: #181818;
   --gui-link: var(--gui-color-2);
@@ -250,8 +250,8 @@
   --card-foreground: var(--gui-text);
   --popover: var(--gui-neutral-1);
   --popover-foreground: var(--gui-text);
-  --primary: #ff90e8;
-  --primary-foreground: #181818;
+  --primary: #b3245a;
+  --primary-foreground: #ffffff;
   --secondary: var(--gui-surface-muted);
   --secondary-foreground: var(--gui-text);
   --muted: var(--gui-surface-muted);

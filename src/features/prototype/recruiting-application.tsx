@@ -2,12 +2,15 @@ import { useLayoutEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ApplicationRecord } from "./application-record";
+import { ContributionCard, MarkedAnswer } from "./contribution-card";
 import { nextStages, stageLabels, type Application } from "./model";
 import { usePrototype } from "./store";
 
 export function RecruitingApplication({ application }: { application: Application }) {
   const { state, run } = usePrototype();
   const [note, setNote] = useState("");
+  const [comparing, setComparing] = useState(false);
+  const assistant = application.assistant;
   const [announcement, setAnnouncement] = useState("");
   const statusRef = useRef<HTMLSpanElement>(null);
   const pendingFocus = useRef(false);
@@ -29,6 +32,43 @@ export function RecruitingApplication({ application }: { application: Applicatio
         audience="employer"
         history={application.events}
         statusRef={statusRef}
+        lead={<ContributionCard answer={application.answer} assistant={assistant} />}
+        answerContent={
+          <>
+            <h3>Przesłana aplikacja</h3>
+            {assistant ? (
+              <>
+                <p className="record-caption">
+                  Kandydat użył asystenta. Wyszarzone zdania dopisał asystent.
+                </p>
+                <p>
+                  <MarkedAnswer text={application.answer} assistant={assistant} />
+                </p>
+                <div className="record-actions">
+                  <Button
+                    variant="outline"
+                    aria-expanded={comparing}
+                    onClick={() => setComparing((value) => !value)}
+                  >
+                    {comparing ? "Ukryj tekst kandydata" : "Porównaj z tekstem kandydata"}
+                  </Button>
+                </div>
+                {comparing && (
+                  <section
+                    id="candidate-own-text"
+                    className="candidate-own-text"
+                    aria-labelledby="candidate-own-text-title"
+                  >
+                    <h4 id="candidate-own-text-title">Tekst napisany przez kandydata</h4>
+                    <p>{assistant.ownText}</p>
+                  </section>
+                )}
+              </>
+            ) : (
+              <p>{application.answer}</p>
+            )}
+          </>
+        }
         footer={
           availableStages.length > 0 ? (
             <>

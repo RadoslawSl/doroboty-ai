@@ -21,6 +21,8 @@ export function ApplicationRecord({
   statusRef,
   children,
   footer,
+  lead,
+  answerContent,
 }: {
   application: Pick<
     Application,
@@ -32,6 +34,10 @@ export function ApplicationRecord({
   statusRef?: Ref<HTMLSpanElement>;
   children?: ReactNode;
   footer?: ReactNode;
+  /** Optional content above the materials, e.g. the employer contribution card. */
+  lead?: ReactNode;
+  /** Optional replacement for the answer panel reading content. */
+  answerContent?: ReactNode;
 }) {
   const candidate = audience === "candidate";
   const title = candidate ? application.jobTitle : application.candidateName;
@@ -64,6 +70,7 @@ export function ApplicationRecord({
           )}
         </div>
       </header>
+      {lead && <div className="recruiting-lead">{lead}</div>}
       <div className="recruiting-layout">
         <RecordSheet
           label={candidate ? "Twoja wysłana aplikacja" : "Materiały kandydata"}
@@ -71,7 +78,7 @@ export function ApplicationRecord({
             {
               value: "answer",
               label: "Odpowiedź",
-              content: (
+              content: answerContent ?? (
                 <>
                   <h3>Przesłana aplikacja</h3>
                   <p>{application.answer}</p>

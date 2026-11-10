@@ -2,6 +2,7 @@ import { z } from "zod";
 import marketplace from "./data/marketplace.json" with { type: "json" };
 import people from "./data/people.json" with { type: "json" };
 import type { JobWithCompany } from "@/features/jobs/types";
+import { assistAnswer } from "./contribution";
 
 const id = z
   .string()
@@ -11,6 +12,9 @@ const id = z
 const shortText = z.string().trim().min(1).max(200);
 const text = z.string().trim().max(12000);
 export const MIN_APPLICATION_ANSWER_LENGTH = 20;
+/** Candidate's own text and the local assistant proposal (variant C), when the assistant was used. */
+const assistantSchema = z.object({ ownText: text, proposal: text });
+export type AssistantRecord = z.infer<typeof assistantSchema>;
 const companySchema = z.object({
   id,
   slug: id,
@@ -115,6 +119,7 @@ const applicationSchema = z.object({
   answer: text.min(MIN_APPLICATION_ANSWER_LENGTH),
   sourceNotes: text,
   generatedAnswer: text,
+  assistant: assistantSchema.optional(),
   score: z.number().int().min(0).max(100),
   summary: text,
   stage: z.enum(stages),
@@ -129,6 +134,7 @@ const draftSchema = z.object({
   notes: text,
   generated: text,
   answer: text,
+  assistant: assistantSchema.optional(),
 });
 export const stateSchema = z
   .object({
@@ -201,13 +207,21 @@ export type Action =
   | { type: "select_person"; id: string | null }
   | { type: "profile"; value: z.infer<typeof profileSchema> }
   | { type: "toggle_saved"; jobId: string }
-  | { type: "draft"; jobId: string; notes: string; generated: string; answer: string }
+  | {
+      type: "draft";
+      jobId: string;
+      notes: string;
+      generated: string;
+      answer: string;
+      assistant?: AssistantRecord;
+    }
   | {
       type: "submit";
       jobId: string;
       notes: string;
       generated: string;
       answer: string;
+      assistant?: AssistantRecord;
       consent: boolean;
     }
   | { type: "stage"; applicationId: string; stage: Stage; note: string }
@@ -227,6 +241,10 @@ export function initialState(): State {
   });
   const bob = state.people.find((x) => x.id === "candidate-marek")!;
   const job = state.jobs[0];
+  // The example candidate used the local assistant; variant C keeps their own sentences.
+  const exampleOwnText =
+    "Pracowałem nad automatyzacją obsługi zgłoszeń. Poprowadziłem badania z użytkownikami i wdrożenie, które skróciło czas odpowiedzi o 25%. Chętnie opowiem o decyzjach i ograniczeniach tego projektu.";
+  const exampleProposal = assistAnswer(exampleOwnText, job.title);
   state.applications.push({
     id: "application-example",
     candidateId: bob.id,
@@ -235,10 +253,10 @@ export function initialState(): State {
     jobTitle: job.title,
     candidateName: bob.name,
     cv: bob.cv,
-    answer:
-      "Pracowałem nad automatyzacją obsługi zgłoszeń. Poprowadziłem badania z użytkownikami i wdrożenie, które skróciło czas odpowiedzi o 25%. Chętnie opowiem o decyzjach i ograniczeniach tego projektu.",
+    answer: exampleProposal,
     sourceNotes: "",
     generatedAnswer: "",
+    assistant: { ownText: exampleOwnText, proposal: exampleProposal },
     score: bob.exampleScore,
     summary: bob.exampleSummary,
     stage: "submitted",
@@ -310,6 +328,7 @@ export function transition(
         answer: action.answer,
         sourceNotes: action.notes,
         generatedAnswer: action.generated,
+        assistant: action.assistant,
         score: p.exampleScore,
         summary: p.exampleSummary,
         stage: "submitted",

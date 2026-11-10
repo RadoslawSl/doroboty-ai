@@ -16,6 +16,8 @@ import { CvAttachment } from "./cv-attachment";
 import { MatchScore } from "./match-score";
 import { RecruitingApplication } from "./recruiting-application";
 import { CandidateApplication } from "./candidate-application";
+import { ApplicationAssistant } from "./application-assistant";
+import type { AssistantRecord } from "./model";
 
 export function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
@@ -239,6 +241,7 @@ export function ApplyPage() {
   const notes = draft?.notes ?? "";
   const generated = draft?.generated ?? "";
   const [answer, setAnswer] = useState(draft?.answer ?? "");
+  const [assistant, setAssistant] = useState<AssistantRecord | undefined>(draft?.assistant);
   const [consent, setConsent] = useState(false);
   const [message, setMessage] = useState("");
   const [attempted, setAttempted] = useState(false);
@@ -281,7 +284,7 @@ export function ApplyPage() {
       document.getElementById("application-consent")?.focus();
       return;
     }
-    if (run({ type: "submit", jobId: job!.id, notes, generated, answer, consent })) {
+    if (run({ type: "submit", jobId: job!.id, notes, generated, answer, assistant, consent })) {
       submittedOnce.current = true;
       setSubmitted(true);
       if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -352,6 +355,18 @@ export function ApplyPage() {
                 : `Minimum ${MIN_APPLICATION_ANSWER_LENGTH} znaków. Obecnie: ${answerLength}.`}
             </p>
           </section>
+          <ApplicationAssistant
+            answer={answer}
+            jobTitle={job.title}
+            assistant={assistant}
+            disabled={submitted}
+            onUse={(record) => {
+              setAssistant(record);
+              setAnswer(record.proposal);
+              setConsent(false);
+              answerInput.current?.focus();
+            }}
+          />
           <div className="application-form-section application-submit">
             <label className="application-consent">
               <Checkbox
@@ -387,7 +402,7 @@ export function ApplyPage() {
                 disabled={submitted}
                 variant="outline"
                 onClick={() => {
-                  if (run({ type: "draft", jobId: job.id, notes, generated, answer }))
+                  if (run({ type: "draft", jobId: job.id, notes, generated, answer, assistant }))
                     setMessage("Szkic został zapisany.");
                 }}
               >

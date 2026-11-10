@@ -995,3 +995,39 @@ test("candidate snapshot supports custom CV and long content at desktop and mobi
     record.answer,
   );
 });
+
+test("assistant keeps the own-contribution sentence and the employer card shows it", async ({
+  page,
+}) => {
+  const own = "Odpowiadałam za przejście od prototypu do codziennej pracy zespołu obsługi.";
+  const ownText = `Chodzi o projekt asystenta do zgłoszeń. Przygotowywałam prezentację dla zarządu. ${own}`;
+  await choose(page, "Anna Kowalska");
+  await page.goto("/#/aplikuj/ai-product-manager");
+  const answer = page.getByLabel("Dlaczego pasujesz do tej roli?");
+  await answer.fill(ownText);
+  await page.getByRole("button", { name: "Popraw z asystentem", exact: true }).click();
+  const proposal = page.locator(".assistant-proposal");
+  await expect(proposal).toContainText(own);
+  await page.getByRole("button", { name: "Użyj propozycji", exact: true }).click();
+  await expect(answer).toBeFocused();
+  await expect(answer).toHaveValue(new RegExp(`^Aplikuję na stanowisko .*${own}`));
+  await page.getByRole("checkbox").check();
+  await page.getByRole("button", { name: "Wyślij aplikację", exact: true }).click();
+  await expect(page).toHaveURL(/#\/app\/aplikacje\?wyslano=1$/);
+
+  await choose(page, "Karolina Wiśniewska");
+  await page.goto("/#/app/kandydaci");
+  await page.getByRole("link", { name: "Anna Kowalska", exact: true }).click();
+  const card = page.getByRole("region", { name: "Co kandydat zrobił sam" });
+  await expect(card).toContainText(`„${own}”`);
+  await expect(card).toContainText("Opisuje własny wkład w działające rozwiązanie");
+  await expect(page.locator(".assistant-sentence")).toHaveCount(2);
+  const compare = page.getByRole("button", { name: "Porównaj z tekstem kandydata", exact: true });
+  await expect(compare).toHaveAttribute("aria-expanded", "false");
+  await compare.click();
+  await expect(page.getByRole("region", { name: "Tekst napisany przez kandydata" })).toContainText(
+    ownText,
+  );
+  const results = await new AxeBuilder({ page }).include(".recruiting-record").analyze();
+  expect(results.violations).toEqual([]);
+});

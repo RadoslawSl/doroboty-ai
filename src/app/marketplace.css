@@ -25,6 +25,9 @@
   border: 1px solid var(--pp-ink);
   border-radius: 18px;
   background: var(--pp-action);
+  color: white;
+  --control-hover-bg: var(--pp-action-hover);
+  --control-hover-text: white;
   font-size: 14px;
   font-weight: 600;
   line-height: 1.5;

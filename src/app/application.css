@@ -297,5 +297,23 @@
 }
 .application-actions .application-send:disabled {
   background: var(--gui-color-1);
-  color: var(--gui-text);
+  color: white;
+}
+
+/* Optional local writing assistant (variant C) inside the application form. */
+.assistant-proposal {
+  margin-top: 18px;
+  padding: 18px 20px;
+  border: 1px solid var(--gui-text);
+  border-radius: 16px;
+  background: white;
+}
+.assistant-proposal h4 {
+  margin-bottom: 10px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.assistant-proposal p {
+  overflow-wrap: anywhere;
+  line-height: 1.7;
 }
