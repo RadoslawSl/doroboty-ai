@@ -6,6 +6,7 @@ import { JobCard } from "@/features/jobs/job-card";
 import { usePrototype } from "./store";
 import { publishedJobs } from "./model";
 import { cn } from "@/lib/utils";
+import { CategoryRobot } from "./category-robots";
 
 import peopleArt from "../../../docs/design-system/agent-kit/assets/people.png";
 
@@ -70,10 +71,12 @@ export default function HomePage() {
           Build. Apply. Lead.
         </h2>
         <div className="mt-8 grid gap-5 md:grid-cols-3">
-          {categories.map((category, index) => (
-            <article key={category.slug} className="prototype-panel">
-              <span className="text-xs font-medium text-muted-foreground">0{index + 1}</span>
-              <h3 className="mt-3 text-xl font-semibold">{category.label}</h3>
+          {categories.map((category) => (
+            <article key={category.slug} className="prototype-panel category-card">
+              <div className="category-card-head">
+                <CategoryRobot slug={category.slug} />
+                <h3 className="text-xl font-semibold">{category.label}</h3>
+              </div>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                 {category.description}
               </p>

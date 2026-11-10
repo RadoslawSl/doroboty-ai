@@ -310,3 +310,16 @@ footer {
     display: none;
   }
 }
+
+/* Original robot characters on the homepage Build / Apply / Lead cards (decorative). */
+.category-card-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.category-card .category-robot {
+  flex: 0 0 auto;
+  display: block;
+  width: 112px;
+  height: auto;
+}
