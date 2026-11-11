@@ -8,7 +8,8 @@
       "description": "Polski software house rozwijający produkty automatyzujące pracę zespołów finansowych i operacyjnych. Łączymy badania użytkowników, modele językowe i rygor produkcyjnego oprogramowania.",
       "websiteUrl": "https://example.com/brightlabs",
       "location": "Warszawa",
-      "sizeLabel": "51–200 osób"
+      "sizeLabel": "51–200 osób",
+      "logoUrl": "/company-logos/demo-lumen-tools-v1.png"
     },
     {
       "id": "10000000-0000-4000-8000-000000000002",
@@ -18,7 +19,8 @@
       "description": "Europejska firma healthtech upraszczająca dokumentację i koordynację opieki. Pracujemy w środowisku regulowanym, dlatego jakość i możliwość wyjaśnienia decyzji są równie ważne jak tempo.",
       "websiteUrl": "https://example.com/northstar",
       "location": "Kraków / zdalnie",
-      "sizeLabel": "201–500 osób"
+      "sizeLabel": "201–500 osób",
+      "logoUrl": "/company-logos/demo-kompas-automation-v1.png"
     },
     {
       "id": "10000000-0000-4000-8000-000000000003",
@@ -28,7 +30,8 @@
       "description": "Projektujemy i wdrażamy cyfrowe produkty, które rozwiązują realne problemy biznesowe. AI traktujemy jak materiał projektowy, a nie osobną kategorię produktu.",
       "websiteUrl": "https://example.com/plain-sight",
       "location": "Wrocław",
-      "sizeLabel": "11–50 osób"
+      "sizeLabel": "11–50 osób",
+      "logoUrl": "/company-logos/demo-punkt-solutions-v1.png"
     }
   ],
   "jobs": [

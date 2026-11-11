@@ -221,7 +221,7 @@ export function Shell() {
                 {navigation.map((item) => (
                   <Link
                     key={item.to}
-                    className="hidden text-sm font-medium whitespace-nowrap text-muted-foreground transition-colors hover:text-foreground md:inline"
+                    className="hidden text-base font-medium whitespace-nowrap text-muted-foreground transition-colors hover:text-foreground md:inline"
                     to={item.to}
                   >
                     {item.label}
@@ -232,13 +232,13 @@ export function Shell() {
                     {person.role === "candidate" && (
                       <>
                         <Link
-                          className="hidden text-sm font-medium whitespace-nowrap text-muted-foreground lg:inline"
+                          className="hidden text-base font-medium whitespace-nowrap text-muted-foreground lg:inline"
                           to="/app/aplikacje"
                         >
                           Aplikacje
                         </Link>
                         <Link
-                          className="hidden text-sm font-medium whitespace-nowrap text-muted-foreground lg:inline"
+                          className="hidden text-base font-medium whitespace-nowrap text-muted-foreground lg:inline"
                           to="/app/profil"
                         >
                           Profil
@@ -249,7 +249,7 @@ export function Shell() {
                       to="/app"
                       className={cn(
                         buttonVariants({ variant: "outline", size: "lg" }),
-                        "text-sm font-medium max-sm:min-h-10 max-sm:px-[var(--gui-space-xs)] max-sm:text-sm",
+                        "text-base font-medium max-sm:min-h-10 max-sm:px-[var(--gui-space-xs)] max-sm:text-sm",
                       )}
                     >
                       Moje konto
@@ -272,7 +272,7 @@ export function Shell() {
                       to="/auth/sign-in?audience=candidate"
                       className={cn(
                         buttonVariants({ variant: "outline", size: "lg" }),
-                        "text-sm font-medium max-sm:min-h-10 max-sm:px-[var(--gui-space-xs)] max-sm:text-sm",
+                        "text-base font-medium max-sm:min-h-10 max-sm:px-[var(--gui-space-xs)] max-sm:text-sm",
                       )}
                     >
                       Wybierz osobę
@@ -288,15 +288,15 @@ export function Shell() {
           <footer className="bg-muted/40 text-foreground shadow-[var(--gui-divider-top-shadow)]">
             <div className="mx-auto grid max-w-[1360px] gap-10 px-5 py-12 sm:grid-cols-2 lg:px-8">
               <div>
-                <p className="text-base font-semibold">DoRoboty.ai</p>
-                <p className="mt-3 max-w-lg text-sm leading-relaxed text-muted-foreground">
+                <p className="text-lg font-semibold">DoRoboty.ai</p>
+                <p className="mt-3 max-w-lg text-base leading-relaxed text-muted-foreground">
                   Praca dla ludzi, którzy potrafią z AI zbudować coś wartościowego — nie tylko
                   wpisać je do CV.
                 </p>
               </div>
               <nav
                 aria-label="Stopka"
-                className="flex flex-wrap content-start gap-x-6 gap-y-3 text-sm text-muted-foreground sm:justify-end"
+                className="flex flex-wrap content-start gap-x-6 gap-y-3 text-base text-muted-foreground sm:justify-end"
               >
                 <Link to="/oferty">Oferty</Link>
                 <Link to="/metodologia">Metodologia</Link>
@@ -306,7 +306,7 @@ export function Shell() {
                 </Link>
               </nav>
             </div>
-            <div className="px-5 py-4 text-xs text-muted-foreground shadow-[var(--gui-divider-top-shadow)] lg:px-8">
+            <div className="px-5 py-4 text-sm text-muted-foreground shadow-[var(--gui-divider-top-shadow)] lg:px-8">
               <div className="mx-auto max-w-[1360px]">
                 © {new Date().getFullYear()} DoRoboty.ai — od Superhero.tech
               </div>

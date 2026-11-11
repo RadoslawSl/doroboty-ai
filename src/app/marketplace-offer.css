@@ -134,7 +134,7 @@
   border-bottom: 1px solid var(--pp-ink);
 }
 .pp-offer-eyebrow {
-  font-size: 12px;
+  font-size: 15px;
   color: var(--pp-muted);
   margin-bottom: 12px;
 }
@@ -261,7 +261,7 @@
   align-items: center;
 }
 .pp-employer-top .pp-offer-eyebrow {
-  font-size: 11px;
+  font-size: 14px;
   margin: 0 0 4px;
 }
 .pp-employer-top h2 {
