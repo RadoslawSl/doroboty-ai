@@ -81,10 +81,10 @@ export default function HomePage() {
                 {category.description}
               </p>
               <Link
-                className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-[var(--gui-link)] hover:underline"
+                className="mt-6 inline-flex items-center gap-2 text-lg font-semibold text-[var(--gui-link)] hover:underline"
                 to={`/oferty?category=${category.slug}`}
               >
-                Przeglądaj role <ArrowRight className="size-4" />
+                Przeglądaj role <ArrowRight className="size-5" />
               </Link>
             </article>
           ))}
