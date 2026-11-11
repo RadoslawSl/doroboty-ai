@@ -8,6 +8,7 @@ import { publishedJobs } from "./model";
 import { cn } from "@/lib/utils";
 import { CategoryRobot } from "./category-robots";
 import { TrustedCompanies } from "./trusted-companies";
+import { EmployerCta } from "./contact";
 
 import peopleArt from "../../../docs/design-system/agent-kit/assets/people.png";
 
@@ -136,6 +137,7 @@ export default function HomePage() {
           <TrustedCompanies companies={trustedCompanies} />
         </div>
       </section>
+      <EmployerCta />
     </>
   );
 }

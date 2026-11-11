@@ -449,3 +449,132 @@ a.trusted-card:focus-visible {
     padding: 22px 12px 18px;
   }
 }
+
+/* Homepage employer call to action. */
+.cta-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) auto;
+  align-items: center;
+  gap: 32px 48px;
+  padding: 48px;
+  border-radius: 32px;
+  background: #126b9e;
+  color: white;
+}
+.cta-panel h2 {
+  max-width: 18ch;
+  margin-top: 12px;
+  color: white;
+  font-size: 44px;
+  line-height: 1.1;
+  letter-spacing: -1.2px;
+}
+.cta-eyebrow {
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: var(--gui-tracking-xl);
+}
+.cta-panel .cta-eyebrow {
+  color: rgb(255 255 255 / 85%);
+}
+.cta-lead {
+  max-width: 60ch;
+  margin-top: 16px;
+  color: rgb(255 255 255 / 90%);
+  font-size: 17px;
+  line-height: 1.6;
+}
+.cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.cta-panel .cta-secondary {
+  background: white;
+}
+@media (max-width: 900px) {
+  .cta-panel {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 32px 24px;
+  }
+  .cta-panel h2 {
+    font-size: 34px;
+  }
+}
+
+/* Contact page. */
+.contact-page {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  align-items: start;
+  gap: 48px;
+}
+.contact-intro .cta-eyebrow {
+  color: var(--gui-text-muted);
+}
+.contact-intro h1 {
+  margin-top: 12px;
+}
+.contact-points {
+  display: grid;
+  gap: 12px;
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.contact-points li {
+  position: relative;
+  padding-left: 26px;
+  line-height: 1.6;
+}
+.contact-points li::before {
+  position: absolute;
+  top: 9px;
+  left: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #b3245a;
+  content: "";
+}
+.contact-form {
+  padding: 32px;
+  box-shadow: inset 0 0 0 1px var(--gui-text);
+}
+.contact-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+.contact-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.contact-error {
+  color: var(--gui-error);
+  font-size: 14px;
+}
+.contact-success {
+  display: grid;
+  gap: 16px;
+}
+.contact-success h2 {
+  margin: 0;
+}
+@media (max-width: 900px) {
+  .contact-page {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+  }
+}
+@media (max-width: 600px) {
+  .contact-form {
+    padding: 20px;
+  }
+  .contact-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

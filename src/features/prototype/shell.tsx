@@ -300,6 +300,7 @@ export function Shell() {
               >
                 <Link to="/oferty">Oferty</Link>
                 <Link to="/metodologia">Metodologia</Link>
+                <Link to="/kontakt">Kontakt</Link>
                 <Link to="/polityka-prywatnosci">Prywatność</Link>
                 <Link className="inline-flex items-center gap-1" to="/auth/sign-in">
                   Strefa case <ArrowUpRight className="size-4" />
