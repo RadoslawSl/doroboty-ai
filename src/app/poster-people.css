@@ -578,3 +578,121 @@ a.trusted-card:focus-visible {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* Homepage employer pricing: three plans, the featured one on the blue brand surface. */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.pricing-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 32px 28px 28px;
+  box-shadow: inset 0 0 0 1px var(--gui-text);
+}
+.pricing-card[data-featured] {
+  background: #126b9e;
+  color: white;
+  box-shadow:
+    inset 0 0 0 1px var(--gui-text),
+    6px 6px 0 var(--gui-text);
+}
+.pricing-badge {
+  align-self: flex-start;
+  margin-bottom: 14px;
+  padding: 4px 12px;
+  border: 1px solid var(--gui-text);
+  border-radius: 999px;
+  background: #dcecf6;
+  color: var(--gui-text);
+  font-size: 13px;
+  font-weight: 600;
+}
+.pricing-name {
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.pricing-audience {
+  margin-top: 4px;
+  color: var(--gui-text-muted);
+  font-size: 15px;
+}
+.pricing-price {
+  margin-top: 24px;
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -1px;
+}
+.pricing-price[data-text] {
+  font-size: 30px;
+  letter-spacing: -0.5px;
+}
+.pricing-unit {
+  margin-top: 6px;
+  color: var(--gui-text-muted);
+  font-size: 14px;
+}
+.pricing-note {
+  margin-top: 12px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.pricing-card[data-featured] :is(.pricing-audience, .pricing-unit) {
+  color: rgb(255 255 255 / 85%);
+}
+.pricing-features {
+  display: grid;
+  gap: 12px;
+  margin: 24px 0 28px;
+  padding: 24px 0 0;
+  border-top: 1px solid #d8d5d1;
+  list-style: none;
+  font-size: 15px;
+  line-height: 1.5;
+}
+.pricing-card[data-featured] .pricing-features {
+  border-top-color: rgb(255 255 255 / 35%);
+}
+.pricing-features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.pricing-features svg {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin-top: 3px;
+}
+.pricing-cta {
+  margin-top: auto;
+  justify-content: center;
+}
+.pricing-card[data-featured] .pricing-cta {
+  border: 1px solid var(--gui-text);
+}
+.pricing-card:not([data-featured]) .pricing-cta {
+  background: white;
+}
+@media (max-width: 1000px) {
+  .pricing-grid {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 560px;
+  }
+}
+@media (max-width: 600px) {
+  .pricing-card {
+    padding: 24px 20px 20px;
+  }
+  .pricing-price {
+    font-size: 34px;
+  }
+}

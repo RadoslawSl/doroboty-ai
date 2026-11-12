@@ -12,6 +12,7 @@ import { Field } from "./workspace";
 export const contactTopics = {
   oferta: "Chcę opublikować ofertę",
   rekrutacja: "Potrzebuję pomocy w rekrutacji roli AI",
+  team: "Interesuje mnie plan Team",
   kandydat: "Mam pytanie jako kandydat",
   inne: "Inna sprawa",
 } as const;

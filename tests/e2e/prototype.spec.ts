@@ -658,7 +658,7 @@ test("homepage surfaces and marketplace action type roles match the shared refer
   page,
 }) => {
   await page.goto("/#/");
-  const cards = page.locator("main article.prototype-panel");
+  const cards = page.locator("main article.prototype-panel.category-card");
   await expect(cards).toHaveCount(3);
   for (const card of await cards.all()) {
     await expect(card).toHaveCSS("border-radius", "24px");
