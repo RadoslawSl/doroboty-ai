@@ -23,6 +23,7 @@ export function ApplicationRecord({
   footer,
   lead,
   answerContent,
+  extraSections = [],
 }: {
   application: Pick<
     Application,
@@ -38,6 +39,8 @@ export function ApplicationRecord({
   lead?: ReactNode;
   /** Optional replacement for the answer panel reading content. */
   answerContent?: ReactNode;
+  /** Optional tabs after "Odpowiedź" and "CV", e.g. the candidate profile for employers. */
+  extraSections?: { value: string; label: string; content: ReactNode }[];
 }) {
   const candidate = audience === "candidate";
   const title = candidate ? application.jobTitle : application.candidateName;
@@ -100,6 +103,7 @@ export function ApplicationRecord({
                 </>
               ),
             },
+            ...extraSections,
           ]}
           footer={footer}
         >

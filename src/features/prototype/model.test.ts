@@ -139,3 +139,30 @@ describe("coherent browser scenario", () => {
     ).toThrow();
   });
 });
+
+describe("candidate profile projects", () => {
+  const project = {
+    id: "project-1",
+    name: "Asystent obsługi zgłoszeń",
+    involvement: "co" as const,
+    responsibilities: "Odpowiadałam za integrację modelu i testy.",
+    result: "Czas obsługi zgłoszenia spadł z 2 dni do 4 godzin.",
+  };
+  it("starts empty, saves projects for the candidate and keeps old saved state valid", () => {
+    const start = as(initialState(), "candidate-anna");
+    expect(start.people.every((person) => Array.isArray(person.projects))).toBe(true);
+    const saved = transition(start, { type: "projects", value: [project] });
+    expect(saved.people.find((p) => p.id === "candidate-anna")!.projects).toEqual([project]);
+    const legacy = JSON.parse(JSON.stringify(start));
+    for (const person of legacy.people) delete person.projects;
+    expect(stateSchema.parse(legacy).people[0].projects).toEqual([]);
+  });
+  it("rejects projects without scope of work or result and limits the list", () => {
+    const s = as(initialState(), "candidate-anna");
+    expect(() =>
+      transition(s, { type: "projects", value: [{ ...project, result: " " }] }),
+    ).toThrow();
+    const many = Array.from({ length: 11 }, (_, i) => ({ ...project, id: `project-${i}` }));
+    expect(() => transition(s, { type: "projects", value: many })).toThrow();
+  });
+});

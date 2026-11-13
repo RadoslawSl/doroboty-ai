@@ -578,3 +578,114 @@ a.trusted-card:focus-visible {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* Candidate profile projects (scope of work and result). */
+.project-list {
+  display: grid;
+  gap: 16px;
+  margin: 0 0 20px;
+  padding: 0;
+  list-style: none;
+}
+.project-item {
+  min-width: 0;
+  padding: 20px 22px;
+  border-radius: 18px;
+  box-shadow: inset 0 0 0 1px var(--gui-text);
+}
+.project-item h3 {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+.project-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  margin-top: 8px;
+  color: var(--gui-text-muted);
+  font-size: 14px;
+}
+.project-involvement {
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: #dcecf6;
+  color: var(--gui-text);
+  font-weight: 600;
+}
+.project-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 24px;
+  margin: 16px 0 0;
+}
+.project-facts dt {
+  font-size: 14px;
+  font-weight: 600;
+}
+.project-facts dd {
+  margin: 4px 0 0;
+  font-size: 15px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.project-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+.project-form {
+  padding: 0;
+  border: 0;
+}
+.project-form h3 {
+  margin-bottom: 4px;
+}
+.project-form-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 16px;
+}
+.project-list + .project-form,
+.prototype-panel > .project-form {
+  padding: 20px 22px;
+  border-radius: 18px;
+  box-shadow: inset 0 0 0 1px var(--gui-text);
+  margin-bottom: 4px;
+}
+@media (max-width: 700px) {
+  .project-facts,
+  .project-form-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .project-item,
+  .project-list + .project-form,
+  .prototype-panel > .project-form {
+    padding: 16px;
+  }
+}
+
+/* Candidate profile tab in the employer application record */
+.candidate-profile > * + * {
+  margin-top: 0.75rem;
+}
+.candidate-profile h3 + .record-caption {
+  margin-top: 0.25rem;
+}
+.record-reading .candidate-profile-headline {
+  font-weight: 700;
+  font-size: 1.125rem;
+}
+.candidate-profile-location {
+  color: var(--muted-foreground);
+}
+.candidate-profile h3:not(:first-child) {
+  margin-top: 1.5rem;
+}
+.candidate-profile .project-list {
+  margin-top: 1rem;
+}

@@ -69,8 +69,24 @@ export const profileSchema = z.object({
   bio: text,
   location: shortText,
 });
+/** A project the candidate delivered alone ("own") or with others ("co"), described in their profile. */
+export const projectSchema = z.object({
+  id,
+  name: shortText,
+  involvement: z.enum(["own", "co"]),
+  period: z.string().trim().max(100).optional(),
+  responsibilities: z.string().trim().min(1).max(4000),
+  result: z.string().trim().min(1).max(4000),
+});
+export type Project = z.infer<typeof projectSchema>;
+export const MAX_PROJECTS = 10;
+export const involvementLabels: Record<Project["involvement"], string> = {
+  own: "Projekt realizowany samodzielnie",
+  co: "Projekt współrealizowany w zespole",
+};
 const personSchema = profileSchema.extend({
   id,
+  projects: z.array(projectSchema).max(MAX_PROJECTS).default([]),
   role: z.enum(["candidate", "employer", "operator"]),
   companyId: id.optional(),
   cv: text,
@@ -206,6 +222,7 @@ export type Application = State["applications"][number];
 export type Action =
   | { type: "select_person"; id: string | null }
   | { type: "profile"; value: z.infer<typeof profileSchema> }
+  | { type: "projects"; value: Project[] }
   | { type: "toggle_saved"; jobId: string }
   | {
       type: "draft";
@@ -298,6 +315,8 @@ export function transition(
     s.activePersonId = action.id;
   } else if (action.type === "profile")
     Object.assign(candidate(), profileSchema.parse(action.value));
+  else if (action.type === "projects")
+    candidate().projects = z.array(projectSchema).max(MAX_PROJECTS).parse(action.value);
   else if (action.type === "toggle_saved") {
     const p = candidate();
     if (!s.jobs.some((x) => x.id === action.jobId)) fail("Nie znaleziono oferty.");

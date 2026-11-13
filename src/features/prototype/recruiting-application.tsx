@@ -2,8 +2,9 @@ import { useLayoutEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ApplicationRecord } from "./application-record";
+import { ProjectList } from "./candidate-projects";
 import { ContributionCard, MarkedAnswer } from "./contribution-card";
-import { nextStages, stageLabels, type Application } from "./model";
+import { nextStages, stageLabels, type Application, type Person } from "./model";
 import { usePrototype } from "./store";
 
 export function RecruitingApplication({ application }: { application: Application }) {
@@ -16,6 +17,7 @@ export function RecruitingApplication({ application }: { application: Applicatio
   const pendingFocus = useRef(false);
   const company = state.companies.find((item) => item.id === application.companyId);
   const availableStages = nextStages[application.stage];
+  const candidate = state.people.find((person) => person.id === application.candidateId);
 
   useLayoutEffect(() => {
     if (pendingFocus.current) {
@@ -32,6 +34,17 @@ export function RecruitingApplication({ application }: { application: Applicatio
         audience="employer"
         history={application.events}
         statusRef={statusRef}
+        extraSections={
+          candidate
+            ? [
+                {
+                  value: "profile",
+                  label: "Profil",
+                  content: <CandidateProfile person={candidate} />,
+                },
+              ]
+            : []
+        }
         lead={<ContributionCard answer={application.answer} assistant={assistant} />}
         answerContent={
           <>
@@ -123,5 +136,24 @@ export function RecruitingApplication({ application }: { application: Applicatio
         {announcement}
       </p>
     </>
+  );
+}
+
+/** Current public profile of the candidate, as the employer sees it (not a snapshot). */
+function CandidateProfile({ person }: { person: Person }) {
+  return (
+    <div className="candidate-profile">
+      <h3>Profil kandydata</h3>
+      <p className="record-caption">Aktualny profil kandydata, nie stan z dnia aplikowania.</p>
+      <p className="candidate-profile-headline">{person.headline}</p>
+      {person.location && <p className="candidate-profile-location">{person.location}</p>}
+      {person.bio && <p>{person.bio}</p>}
+      <h3>Projekty</h3>
+      {person.projects.length > 0 ? (
+        <ProjectList projects={person.projects} />
+      ) : (
+        <p className="record-caption">Kandydat nie dodał jeszcze projektów do profilu.</p>
+      )}
+    </div>
   );
 }

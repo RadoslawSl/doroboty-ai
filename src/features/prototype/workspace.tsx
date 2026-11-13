@@ -18,6 +18,7 @@ import { RecruitingApplication } from "./recruiting-application";
 import { CandidateApplication } from "./candidate-application";
 import { ApplicationAssistant } from "./application-assistant";
 import type { AssistantRecord } from "./model";
+import { ProjectList, ProjectsEditor } from "./candidate-projects";
 
 export function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
@@ -180,6 +181,14 @@ export function ProfilePage({ preview = false }: { preview?: boolean }) {
           <h2>{person.headline}</h2>
           <p>{person.location}</p>
           <p>{person.bio}</p>
+          {person.projects.length > 0 && (
+            <section aria-labelledby="preview-projects-heading" className="pt-4">
+              <h2 id="preview-projects-heading" className="mb-4">
+                Projekty
+              </h2>
+              <ProjectList projects={person.projects} />
+            </section>
+          )}
         </div>
       ) : (
         <form onSubmit={save} className="prototype-panel prototype-form">
@@ -199,6 +208,7 @@ export function ProfilePage({ preview = false }: { preview?: boolean }) {
           {message && <p role="status">{message}</p>}
         </form>
       )}
+      {!preview && <ProjectsEditor projects={person.projects} />}
       <section className="prototype-panel mt-6">
         <h2 className="mb-4 flex items-center gap-2">
           <FileText className="size-5" />

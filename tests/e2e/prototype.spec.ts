@@ -1037,3 +1037,34 @@ test("assistant keeps the own-contribution sentence and the employer card shows 
   const results = await new AxeBuilder({ page }).include(".recruiting-record").analyze();
   expect(results.violations).toEqual([]);
 });
+
+test("employer sees the candidate's current profile and projects in a Profil tab", async ({
+  page,
+}) => {
+  await choose(page, "Karolina Wiśniewska");
+  await page.goto("/#/app/kandydaci/application-example");
+  const profileTab = page.getByRole("tab", { name: "Profil", exact: true });
+  await profileTab.click();
+  await expect(profileTab).toHaveAttribute("aria-selected", "true");
+  const panel = page.locator(".candidate-profile");
+  await expect(panel).toContainText("Product Owner · produkty B2B");
+  await expect(panel).toContainText("Kandydat nie dodał jeszcze projektów do profilu.");
+
+  await choose(page, "Marek Nowak");
+  await page.goto("/#/app/profil");
+  await page.getByRole("button", { name: "Dodaj projekt", exact: true }).click();
+  await page.getByLabel("Nazwa projektu").fill("Asystent zgłoszeń serwisowych");
+  await page.getByLabel(/Zakres obowiązków/).fill("Zaprojektowałem przepływ i testy.");
+  await page.getByLabel(/Rezultat/).fill("Czas obsługi spadł z 2 dni do 4 godzin.");
+  await page.getByRole("button", { name: "Dodaj projekt", exact: true }).click();
+  await expect(page.getByText("Projekt został dodany.", { exact: true })).toBeVisible();
+
+  await choose(page, "Karolina Wiśniewska");
+  await page.goto("/#/app/kandydaci/application-example");
+  await page.getByRole("tab", { name: "Profil", exact: true }).click();
+  await expect(
+    panel.getByRole("heading", { name: "Asystent zgłoszeń serwisowych", exact: true }),
+  ).toBeVisible();
+  await expect(panel).toContainText("Czas obsługi spadł z 2 dni do 4 godzin.");
+  await expect(panel.getByRole("button")).toHaveCount(0);
+});
