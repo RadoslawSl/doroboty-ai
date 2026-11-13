@@ -26,10 +26,11 @@ const preparation =
   /(przygotow\p{L}*\s+(prompt|prezentacj|materiał|opis|przykład)|prezentacj|warsztat|\bdemo\b|demonstracj|uczestniczył|zbierał\p{L}*\s|koordynował|przegląd narzędzi|rekomendacj|pisał\p{L}*\s+instrukcj|sprawdzał\p{L}*\s+gotowe|implementacj\p{L}*\s+(usługi\s+)?wykonał|wykonał\p{L}*\s+(drugi|inny)\s+zesp)/iu;
 
 // First-person ownership of a working solution or a decision mandate (E0 "własny wkład").
+// Past-tense stems ("wdrożył", "odpowiadał") plus \p{L}* match both "-łem" and "-łam" forms.
 const ownership =
-  /^(sam\p{L}?\s|samodzielnie\s|mój zakres|moja część|moim zadaniem było|odpowiadał\p{L}*\s+za|wprowadził\p{L}*|wdrożył\p{L}*|zbudował\p{L}*|zaimplementował\p{L}*|napisał\p{L}*\s+(kod|moduł|usług|integracj|skrypt)|utrzymywał\p{L}*|zmienił\p{L}*|miał\p{L}*\s+mandat|zarządzał\p{L}*|uzgadniał\p{L}*|(po|prze)?prowadził\p{L}*\s.*wdroż|(po)?prowadził\p{L}*\s.*decyzj|zaprojektował\p{L}*\s.*wdroż)/iu;
+  /^(sam\p{L}?\s|samodzielnie\s|mój zakres|moja część|moim zadaniem było|odpowiadał\p{L}*\s+za|wprowadził\p{L}*|wdrożył\p{L}*|wdrażał\p{L}*|zbudował\p{L}*|zaimplementował\p{L}*|napisał\p{L}*\s+(kod|moduł|usług|integracj|skrypt)|utrzymywał\p{L}*|zmienił\p{L}*|miał\p{L}*\s+mandat|zarządzał\p{L}*|uzgadniał\p{L}*|(po|prze)?prowadził\p{L}*\s.*wdroż|(po)?prowadził\p{L}*\s.*decyzj|zaprojektował\p{L}*\s.*wdroż)/iu;
 // Strong first-person implementation verbs later in the sentence ("... i wdrożyłam automatyzację").
-const implementation = /(^|\s)(wdrożył|zbudował|zaimplementował)\p{L}*\s/iu;
+const implementation = /(^|\s)(wdrożył|wdrażał|zbudował|zaimplementował)\p{L}*\s/iu;
 
 export function classifySentence(sentence: string): ContributionKind {
   if (preparation.test(sentence)) return "preparation";

@@ -39,12 +39,32 @@ const preparation = [
   "Przygotowałem opis możliwych zastosowań i prezentację dla zespołu.",
 ];
 
+/** Same sentences written by a woman: "-łem" → "-łam", "Sam " → "Sama ". */
+const feminine = (sentence: string) =>
+  sentence.replace(/łem\b/gu, "łam").replace(/^Sam\s/u, "Sama ");
+
 describe("contribution rule", () => {
   it.each(own)("labels own contribution: %s", (sentence) => {
     expect(classifySentence(sentence)).toBe("own");
   });
   it.each(preparation)("labels preparation: %s", (sentence) => {
     expect(classifySentence(sentence)).toBe("preparation");
+  });
+  it.each(own.map(feminine))("labels own contribution in the feminine form: %s", (sentence) => {
+    expect(classifySentence(sentence)).toBe("own");
+  });
+  it.each(preparation.map(feminine))("labels preparation in the feminine form: %s", (sentence) => {
+    expect(classifySentence(sentence)).toBe("preparation");
+  });
+  it.each([
+    "Wdrożyłam automatyzację obsługi zgłoszeń.",
+    "Wdrożyłem automatyzację obsługi zgłoszeń.",
+    "Wdrażałam asystenta w dziale obsługi klienta.",
+    "Wdrażałem asystenta w dziale obsługi klienta.",
+    "W zespole obsługi wdrażałam model klasyfikacji zgłoszeń.",
+    "Zbudowałam pipeline danych, a potem wdrożyłam go na produkcji.",
+  ])("recognizes implementation by a woman or a man: %s", (sentence) => {
+    expect(classifySentence(sentence)).toBe("own");
   });
   it("prefers an own-contribution sentence over preparation", () => {
     const text = `Chodzi o projekt katalogu produktów. ${preparation[0]} ${own[8]} Mogę omówić przykład.`;
