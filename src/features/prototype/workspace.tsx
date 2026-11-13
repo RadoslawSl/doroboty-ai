@@ -17,7 +17,7 @@ import { MatchScore } from "./match-score";
 import { RecruitingApplication } from "./recruiting-application";
 import { CandidateApplication } from "./candidate-application";
 import { ApplicationAssistant } from "./application-assistant";
-import type { AssistantRecord } from "./model";
+import type { Application, AssistantRecord } from "./model";
 import { ProjectList, ProjectsEditor } from "./candidate-projects";
 
 export function Field({ label, children }: { label: string; children: ReactNode }) {
@@ -339,22 +339,29 @@ export function ApplyPage() {
             className="application-form-section application-answer"
             aria-label="Odpowiedź do aplikacji"
           >
-            <Field label="Dlaczego pasujesz do tej roli?">
+            <div className="field">
+              <label htmlFor="application-answer" className="application-answer-label">
+                Dlaczego pasujesz do tej roli?
+              </label>
+              <p id="application-answer-prompt" className="application-help">
+                Jakie Twoje wcześniejsze doświadczenia przemawiają za tym?
+              </p>
               <Textarea
+                id="application-answer"
                 disabled={submitted}
                 ref={answerInput}
                 required
                 minLength={MIN_APPLICATION_ANSWER_LENGTH}
                 maxLength={12000}
                 aria-invalid={answerInvalid || undefined}
-                aria-describedby="application-answer-help"
+                aria-describedby="application-answer-prompt application-answer-help"
                 value={answer}
                 onChange={(e) => {
                   setAnswer(e.target.value);
                   setConsent(false);
                 }}
               />
-            </Field>
+            </div>
             <p
               id="application-answer-help"
               role={answerInvalid ? "alert" : undefined}
@@ -460,32 +467,106 @@ export function ApplicationsPage({ employer = false }: { employer?: boolean }) {
       </Field>
       <div className="mt-6 space-y-4">
         {applications.length ? (
-          applications.map((a) => (
-            <article className="prototype-panel" key={a.id}>
-              <div className="flex flex-wrap items-start justify-between gap-4">
-                <div>
-                  <Link
-                    className="text-xl font-semibold text-[var(--gui-link)]"
-                    to={`${employer ? "/app/kandydaci" : "/app/aplikacje"}/${a.id}`}
-                  >
-                    {employer ? a.candidateName : a.jobTitle}
-                  </Link>
-                  <p className="my-3 text-muted-foreground">
-                    {employer
-                      ? a.jobTitle
-                      : state.companies.find((x) => x.id === a.companyId)?.name}
-                  </p>
-                  <p>{stageLabels[a.stage]}</p>
+          employer ? (
+            <CandidateGroups applications={applications} />
+          ) : (
+            applications.map((a) => (
+              <article className="prototype-panel" key={a.id}>
+                <div className="flex flex-wrap items-start justify-between gap-4">
+                  <div>
+                    <Link
+                      className="text-xl font-semibold text-[var(--gui-link)]"
+                      to={`/app/aplikacje/${a.id}`}
+                    >
+                      {a.jobTitle}
+                    </Link>
+                    <p className="my-3 text-muted-foreground">
+                      {state.companies.find((x) => x.id === a.companyId)?.name}
+                    </p>
+                    <p>{stageLabels[a.stage]}</p>
+                  </div>
+                  <MatchScore score={a.score} />
                 </div>
-                <MatchScore score={a.score} />
-              </div>
-              {employer && <p className="mt-4 text-muted-foreground">{a.summary}</p>}
-            </article>
-          ))
+              </article>
+            ))
+          )
         ) : (
           <Empty>Brak aplikacji spełniających kryteria.</Empty>
         )}
       </div>
+    </>
+  );
+}
+
+function applicationCount(count: number) {
+  const lastTwo = count % 100;
+  const last = count % 10;
+  if (count === 1) return "1 aplikacja";
+  if (last >= 2 && last <= 4 && (lastTwo < 12 || lastTwo > 14)) return `${count} aplikacje`;
+  return `${count} aplikacji`;
+}
+
+const submittedAt = (a: Application) => a.events[0]?.at ?? "";
+const listDate = new Intl.DateTimeFormat("pl-PL", { dateStyle: "medium" });
+
+/** Employer list: one card per candidate with every application they sent to this company. */
+function CandidateGroups({ applications }: { applications: Application[] }) {
+  const { state } = usePrototype();
+  const groups = new Map<string, Application[]>();
+  for (const a of [...applications].sort((x, y) => submittedAt(y).localeCompare(submittedAt(x))))
+    groups.set(a.candidateId, [...(groups.get(a.candidateId) ?? []), a]);
+  return (
+    <>
+      {[...groups].map(([candidateId, items]) => {
+        const candidate = state.people.find((x) => x.id === candidateId);
+        const name = items[0].candidateName;
+        const headingId = `candidate-${candidateId}`;
+        return (
+          <article
+            className="prototype-panel candidate-group"
+            key={candidateId}
+            aria-labelledby={headingId}
+          >
+            <header className="candidate-group-header">
+              <div>
+                <h2 id={headingId}>{name}</h2>
+                {candidate?.headline && (
+                  <p className="text-muted-foreground">{candidate.headline}</p>
+                )}
+              </div>
+              <span className="candidate-group-count">{applicationCount(items.length)}</span>
+            </header>
+            <ul className="candidate-applications">
+              {items.map((a) => (
+                <li key={a.id} className="candidate-application">
+                  <div className="candidate-application-main">
+                    <Link
+                      className="text-lg font-semibold text-[var(--gui-link)]"
+                      to={`/app/kandydaci/${a.id}`}
+                      aria-label={`${name}: ${a.jobTitle}`}
+                    >
+                      {a.jobTitle}
+                    </Link>
+                    <p className="candidate-application-meta">
+                      <span className="record-stage">{stageLabels[a.stage]}</span>
+                      {submittedAt(a) && (
+                        <span>
+                          Złożona{" "}
+                          <time dateTime={submittedAt(a)}>
+                            {listDate.format(new Date(submittedAt(a)))}
+                          </time>
+                        </span>
+                      )}
+                    </p>
+                    <p className="text-muted-foreground">{a.summary}</p>
+                  </div>
+                  <MatchScore score={a.score} />
+                </li>
+              ))}
+            </ul>
+          </article>
+        );
+      })}
     </>
   );
 }

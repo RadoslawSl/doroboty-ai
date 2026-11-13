@@ -317,3 +317,10 @@
   overflow-wrap: anywhere;
   line-height: 1.7;
 }
+.application-answer-label {
+  font-size: 15px;
+  font-weight: 600;
+}
+.application-answer .field > .application-help {
+  margin-top: -4px;
+}

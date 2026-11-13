@@ -140,7 +140,9 @@ test("published job → saved offer/draft → submitted application → employer
   await expect(page.getByText("Match Score: 84%", { exact: true })).toBeVisible();
   await choose(page, "Karolina Wiśniewska");
   await page.getByRole("link", { name: "Kandydaci", exact: true }).click();
-  await page.getByRole("link", { name: "Anna Kowalska", exact: true }).click();
+  await page
+    .getByRole("link", { name: "Anna Kowalska: Product Designer do automatyzacji", exact: true })
+    .click();
   await page
     .getByLabel("Notatka rekrutacyjna (widoczna pracodawcy)")
     .fill("Notatka pracodawcy — tylko panel firmy.");
@@ -163,7 +165,7 @@ test("published job → saved offer/draft → submitted application → employer
 test("another company cannot see or change a candidate application", async ({ page }) => {
   await choose(page, "Tomasz Zieliński");
   await page.goto("/#/app/kandydaci");
-  await expect(page.getByRole("link", { name: "Marek Nowak", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Marek Nowak", exact: true })).toHaveCount(0);
   await page.goto("/#/app/kandydaci/application-example");
   await expect(page.getByRole("heading", { name: "Nie znaleziono strony" })).toBeVisible();
 });
@@ -1023,7 +1025,7 @@ test("assistant keeps the own-contribution sentence and the employer card shows 
 
   await choose(page, "Karolina Wiśniewska");
   await page.goto("/#/app/kandydaci");
-  await page.getByRole("link", { name: "Anna Kowalska", exact: true }).click();
+  await page.getByRole("link", { name: "Anna Kowalska: AI Product Manager", exact: true }).click();
   const card = page.getByRole("region", { name: "Co kandydat zrobił sam" });
   await expect(card).toContainText(`„${own}”`);
   await expect(card).toContainText("Opisuje własny wkład w działające rozwiązanie");
@@ -1067,4 +1069,84 @@ test("employer sees the candidate's current profile and projects in a Profil tab
   ).toBeVisible();
   await expect(panel).toContainText("Czas obsługi spadł z 2 dni do 4 godzin.");
   await expect(panel.getByRole("button")).toHaveCount(0);
+});
+
+test("offer cards show Aplikuj only to candidates and switch to the own application after applying", async ({
+  page,
+}) => {
+  await page.goto("/#/oferty");
+  await expect(page.locator(".pp-apply-button")).toHaveCount(0);
+
+  await choose(page, "Karolina Wiśniewska");
+  await page.goto("/#/oferty");
+  await expect(page.locator(".pp-job-card").first()).toBeVisible();
+  await expect(page.locator(".pp-apply-button")).toHaveCount(0);
+
+  await choose(page, "Anna Kowalska");
+  await page.goto("/#/oferty");
+  await page.getByRole("link", { name: "Aplikuj: AI Product Manager", exact: true }).click();
+  await expect(page).toHaveURL(/#\/aplikuj\/ai-product-manager$/);
+  await expect(page.getByRole("heading", { name: "Aplikuj na ofertę", exact: true })).toBeVisible();
+
+  await application(page);
+  await page.goto("/#/oferty");
+  await expect(
+    page.getByRole("link", { name: "Aplikuj: AI Product Manager", exact: true }),
+  ).toHaveCount(0);
+  await expect(
+    page.getByRole("link", { name: "Zobacz swoją aplikację: AI Product Manager", exact: true }),
+  ).toHaveAttribute("href", /#\/app\/aplikacje\/.+/);
+
+  await page.setViewportSize({ width: 375, height: 812 });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});
+
+async function applyAs(page: Page, name: string, slug: string) {
+  await choose(page, name);
+  await page.goto(`/#/aplikuj/${slug}`);
+  await page
+    .getByLabel("Dlaczego pasujesz do tej roli?")
+    .fill(
+      "Wdrożyłem automatyzację obsługi zgłoszeń i odpowiadałem za jej utrzymanie. Czas odpowiedzi spadł o 25%.",
+    );
+  await page.getByRole("checkbox").check();
+  await page.getByRole("button", { name: "Wyślij aplikację", exact: true }).click();
+  await expect(page).toHaveURL(/#\/app\/aplikacje\?wyslano=1$/);
+}
+
+test("employer candidates list groups every application of a person to the company", async ({
+  page,
+}) => {
+  await applyAs(page, "Marek Nowak", "ai-operations-specialist");
+  await applyAs(page, "Marek Nowak", "staff-ai-engineer");
+  await applyAs(page, "Anna Kowalska", "ai-product-manager");
+
+  await choose(page, "Karolina Wiśniewska");
+  await page.goto("/#/app/kandydaci");
+  const marek = page.getByRole("article", { name: "Marek Nowak", exact: true });
+  await expect(marek).toContainText("2 aplikacje");
+  await expect(marek.getByRole("link")).toHaveText([
+    "AI Operations Specialist",
+    "AI Product Manager",
+  ]);
+  await expect(marek).not.toContainText("Staff AI Engineer");
+  const anna = page.getByRole("article", { name: "Anna Kowalska", exact: true });
+  await expect(anna).toContainText("1 aplikacja");
+
+  await page.getByLabel("Szukaj kandydata lub oferty").fill("operations");
+  await expect(page.getByRole("article")).toHaveCount(1);
+  await expect(marek).toContainText("1 aplikacja");
+
+  await page.getByLabel("Szukaj kandydata lub oferty").fill("");
+  await marek
+    .getByRole("link", { name: "Marek Nowak: AI Operations Specialist", exact: true })
+    .click();
+  await expect(page).toHaveURL(/#\/app\/kandydaci\/.+/);
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Marek Nowak", exact: true }),
+  ).toBeVisible();
+
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto("/#/app/kandydaci");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });

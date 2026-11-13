@@ -1,13 +1,19 @@
 import { Link } from "react-router";
-import { ArrowUpRight, Bookmark, MapPin, Monitor } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ArrowRight, ArrowUpRight, Bookmark, MapPin, Monitor } from "lucide-react";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { currentPerson } from "@/features/prototype/model";
 import { usePrototype } from "@/features/prototype/store";
 import type { JobWithCompany } from "./types";
 import { categoryLabels, functionLabels, remoteLabels, seniorityLabels } from "./presentation";
 import { CompanyLogo } from "./company-logo";
 import { SalaryFact } from "./salary-fact";
 export function JobCard({ job, saved }: { job: JobWithCompany; saved?: boolean }) {
-  const { run } = usePrototype();
+  const { state, run } = usePrototype();
+  const person = currentPerson(state);
+  const candidate = person?.role === "candidate";
+  const submitted = candidate
+    ? state.applications.find((x) => x.candidateId === person.id && x.jobId === job.id)
+    : undefined;
   return (
     <article className="pp-job-card">
       <CompanyLogo company={job.company} />
@@ -56,9 +62,30 @@ export function JobCard({ job, saved }: { job: JobWithCompany; saved?: boolean }
           )}
         </div>
         <SalaryFact job={job} />
-        <Link className="pp-detail-button" to={`/oferty/${job.slug}`}>
-          Zobacz rolę <ArrowUpRight className="pp-icon" />
-        </Link>
+        <div className="pp-job-cta">
+          {candidate &&
+            (submitted ? (
+              <Link
+                className="pp-job-applied"
+                to={`/app/aplikacje/${submitted.id}`}
+                aria-label={`Zobacz swoją aplikację: ${job.title}`}
+              >
+                Zobacz swoją aplikację
+              </Link>
+            ) : (
+              <Link
+                className={buttonVariants({ size: "sm", className: "pp-apply-button" })}
+                to={`/aplikuj/${job.slug}`}
+                aria-label={`Aplikuj: ${job.title}`}
+              >
+                Aplikuj
+                <ArrowRight aria-hidden="true" />
+              </Link>
+            ))}
+          <Link className="pp-detail-button" to={`/oferty/${job.slug}`}>
+            Zobacz rolę <ArrowUpRight className="pp-icon" />
+          </Link>
+        </div>
       </div>
     </article>
   );
