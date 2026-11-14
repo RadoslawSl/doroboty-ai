@@ -68,5 +68,13 @@ The app intentionally has no analytics or remote error logging. To capture a pro
 
 ## Data handling for E1 sessions
 
-- Ask participants not to enter real personal data; personas and CVs are synthetic.
-- After a session on a shared computer, reset the scenario in Settings or close the private window.
+Rule agreed with the project owner on 2026-11-14 and added to the E1 session script (super-brain
+`3-Projects/doroboty-ai/supersprint/tydzien-2-powtorka/experiments/e1-session-script.md`):
+
+- Do not enter real data. The facilitator asks participants in the welcome not to type real
+  personal data or confidential company information; personas, applications and CVs are
+  synthetic.
+- Reset after every session. Data stays in the browser until removed. After saving the session
+  results, the facilitator clears the state before the next participant: "Nowa sesja" in the E1
+  prototype, and in this app `#/app/settings` → "Resetuj scenariusz" (or close the private
+  window). The facilitator confirms the start screen is empty.
