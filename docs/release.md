@@ -58,7 +58,8 @@ The facilitator opens the link 30 minutes before every E1 session. If the site d
 
 ## Capturing errors during a session
 
-The app intentionally has no analytics or remote error logging. To capture a problem:
+The app has no remote error logging. Published builds send anonymous PostHog EU page views and
+clicks (FEATURES.md SYS-03), not console errors. To capture a problem:
 
 - Note the screen (hash URL), the persona and the step the participant was taking.
 - Open the browser console (F12 → Console) and copy only the red error message. Do not copy
