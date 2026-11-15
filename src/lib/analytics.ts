@@ -19,6 +19,26 @@ export function analyticsEnabled(hostname: string, production: boolean): boolean
   return !(LOCAL_HOSTS.has(host) || host.endsWith(".localhost") || host === "");
 }
 
+/** Calls `onChange` once per URL change (including the hash) from push/replace/back/forward. */
+export function trackUrlChanges(onChange: () => void, win: Window = window): void {
+  let last = win.location.href;
+  const check = () => {
+    const current = win.location.href;
+    if (current === last) return;
+    last = current;
+    onChange();
+  };
+  for (const method of ["pushState", "replaceState"] as const) {
+    const original = win.history[method].bind(win.history);
+    win.history[method] = (...args: Parameters<History["pushState"]>) => {
+      original(...args);
+      check();
+    };
+  }
+  win.addEventListener("popstate", check);
+  win.addEventListener("hashchange", check);
+}
+
 export async function initAnalytics(): Promise<void> {
   if (!analyticsEnabled(window.location.hostname, import.meta.env.PROD)) return;
   try {
@@ -27,10 +47,14 @@ export async function initAnalytics(): Promise<void> {
       api_host: POSTHOG_HOST,
       persistence: "memory",
       person_profiles: "identified_only",
-      capture_pageview: "history_change",
+      // PostHog's own history tracking ignores the hash, and the app uses hash routes,
+      // so only the first page view comes from PostHog; route changes are captured below.
+      capture_pageview: true,
       autocapture: true,
       disable_session_recording: true,
+      disable_surveys: true,
     });
+    trackUrlChanges(() => posthog.capture("$pageview"));
   } catch {
     // Analytics must never break the prototype.
   }
