@@ -1,3 +1,4 @@
+import { usePostHog } from "@posthog/react";
 import { Link, useLocation, useParams, useSearchParams } from "react-router";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { ArrowUpRight, Users, MapPin, BriefcaseBusiness, Bookmark } from "lucide-react";
@@ -25,6 +26,7 @@ import type { JobWithCompany } from "@/features/jobs/types";
 import { usePrototype } from "./store";
 import { currentPerson, publishedJobs } from "./model";
 import { NotFound } from "./shell";
+import { prototypeLog } from "@/lib/posthog-logger";
 import { cn } from "@/lib/utils";
 
 function LocalMap({ jobs }: { jobs: JobWithCompany[] }) {
@@ -98,6 +100,7 @@ function LocalMap({ jobs }: { jobs: JobWithCompany[] }) {
 }
 export function JobsPage() {
   const { state } = usePrototype();
+  const posthog = usePostHog();
   const person = currentPerson(state);
   const [params, setParams] = useSearchParams();
   const filters = parseJobFilters(Object.fromEntries(params));
@@ -145,6 +148,22 @@ export function JobsPage() {
       const value = String(data.get(key) ?? "").trim();
       if (value) next.set(key, value);
       else next.delete(key);
+    }
+    const resultCount = filterJobs(all, parseJobFilters(Object.fromEntries(next))).length;
+    if (
+      import.meta.env.VITE_PUBLIC_POSTHOG_PROJECT_TOKEN &&
+      import.meta.env.VITE_PUBLIC_POSTHOG_HOST
+    ) {
+      posthog.capture("job_search_performed", {
+        has_query: Boolean(next.get("query")),
+        has_location: Boolean(next.get("location")),
+        result_count: resultCount,
+      });
+      prototypeLog.info("job search completed", {
+        has_query: Boolean(next.get("query")),
+        has_location: Boolean(next.get("location")),
+        result_count: resultCount,
+      });
     }
     setParams(next);
   }
@@ -342,6 +361,7 @@ export function JobPage() {
     return () => cancelAnimationFrame(frame);
   }, [location.hash, location.key, slug]);
   const { state, run } = usePrototype();
+  const posthog = usePostHog();
   const person = currentPerson(state);
   const job = publishedJobs(state).find((x) => x.slug === slug);
   if (!job) return <NotFound />;
@@ -430,7 +450,18 @@ export function JobPage() {
                     variant="outline"
                     aria-label="Zapisz ofertę"
                     aria-pressed={saved}
-                    onClick={() => run({ type: "toggle_saved", jobId: job.id })}
+                    onClick={() => {
+                      if (run({ type: "toggle_saved", jobId: job.id })) {
+                        if (
+                          import.meta.env.VITE_PUBLIC_POSTHOG_PROJECT_TOKEN &&
+                          import.meta.env.VITE_PUBLIC_POSTHOG_HOST
+                        )
+                          posthog.capture(saved ? "job_removed_from_saved" : "job_saved", {
+                            job_id: job.id,
+                            job_category: job.category,
+                          });
+                      }
+                    }}
                   >
                     <Bookmark className={cn(saved && "fill-current")} />
                     Zapisz ofertę

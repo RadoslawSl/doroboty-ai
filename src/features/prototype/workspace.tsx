@@ -1,3 +1,4 @@
+import { usePostHog } from "@posthog/react";
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { Link, Navigate, useNavigate, useParams, useSearchParams } from "react-router";
 import { CheckCircle2, FileText } from "lucide-react";
@@ -30,6 +31,7 @@ export function Field({ label, children }: { label: string; children: ReactNode 
 }
 export function PersonPicker() {
   const { state, run } = usePrototype();
+  const posthog = usePostHog();
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const next = params.get("next");
@@ -53,6 +55,13 @@ export function PersonPicker() {
             <Button
               variant="outline"
               onClick={() => {
+                if (
+                  state.activePersonId &&
+                  state.activePersonId !== person.id &&
+                  import.meta.env.VITE_PUBLIC_POSTHOG_PROJECT_TOKEN &&
+                  import.meta.env.VITE_PUBLIC_POSTHOG_HOST
+                )
+                  posthog.reset();
                 run({ type: "select_person", id: person.id });
                 navigate(
                   person.role === "candidate"
@@ -144,6 +153,7 @@ export function WorkspaceHome() {
 }
 export function ProfilePage({ preview = false }: { preview?: boolean }) {
   const { state, run } = usePrototype();
+  const posthog = usePostHog();
   const person = currentPerson(state)!;
   const [message, setMessage] = useState("");
   function save(e: FormEvent<HTMLFormElement>) {
@@ -159,8 +169,14 @@ export function ProfilePage({ preview = false }: { preview?: boolean }) {
           location: String(data.get("location")),
         },
       })
-    )
+    ) {
+      if (
+        import.meta.env.VITE_PUBLIC_POSTHOG_PROJECT_TOKEN &&
+        import.meta.env.VITE_PUBLIC_POSTHOG_HOST
+      )
+        posthog.capture("profile_saved");
       setMessage("Profil został zapisany.");
+    }
   }
   return (
     <>
@@ -244,6 +260,7 @@ export function SavedPage() {
 export function ApplyPage() {
   const { slug } = useParams();
   const { state, run } = usePrototype();
+  const posthog = usePostHog();
   const person = currentPerson(state)!;
   const navigate = useNavigate();
   const job = publishedJobs(state).find((x) => x.slug === slug);
@@ -295,6 +312,15 @@ export function ApplyPage() {
       return;
     }
     if (run({ type: "submit", jobId: job!.id, notes, generated, answer, assistant, consent })) {
+      if (
+        import.meta.env.VITE_PUBLIC_POSTHOG_PROJECT_TOKEN &&
+        import.meta.env.VITE_PUBLIC_POSTHOG_HOST
+      )
+        posthog.capture("application_submitted", {
+          job_id: job!.id,
+          job_category: job!.category,
+          assistant_used: Boolean(assistant),
+        });
       submittedOnce.current = true;
       setSubmitted(true);
       if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -378,6 +404,13 @@ export function ApplyPage() {
             assistant={assistant}
             disabled={submitted}
             onUse={(record) => {
+              if (
+                import.meta.env.VITE_PUBLIC_POSTHOG_PROJECT_TOKEN &&
+                import.meta.env.VITE_PUBLIC_POSTHOG_HOST
+              )
+                posthog.capture("application_assistant_proposal_accepted", {
+                  job_id: job.id,
+                });
               setAssistant(record);
               setAnswer(record.proposal);
               setConsent(false);
@@ -419,8 +452,17 @@ export function ApplyPage() {
                 disabled={submitted}
                 variant="outline"
                 onClick={() => {
-                  if (run({ type: "draft", jobId: job.id, notes, generated, answer, assistant }))
+                  if (run({ type: "draft", jobId: job.id, notes, generated, answer, assistant })) {
+                    if (
+                      import.meta.env.VITE_PUBLIC_POSTHOG_PROJECT_TOKEN &&
+                      import.meta.env.VITE_PUBLIC_POSTHOG_HOST
+                    )
+                      posthog.capture("application_draft_saved", {
+                        job_id: job.id,
+                        assistant_used: Boolean(assistant),
+                      });
                     setMessage("Szkic został zapisany.");
+                  }
                 }}
               >
                 Zapisz szkic

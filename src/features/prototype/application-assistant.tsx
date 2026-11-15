@@ -1,3 +1,4 @@
+import { usePostHog } from "@posthog/react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { assistAnswer } from "./contribution";
@@ -22,6 +23,7 @@ export function ApplicationAssistant({
   disabled?: boolean;
   onUse: (record: AssistantRecord) => void;
 }) {
+  const posthog = usePostHog();
   const [proposal, setProposal] = useState<AssistantRecord | null>(null);
   const ownText = candidateText(answer, assistant);
   const tooShort = ownText.trim().length < MIN_APPLICATION_ANSWER_LENGTH;
@@ -41,7 +43,17 @@ export function ApplicationAssistant({
           variant="outline"
           disabled={disabled || tooShort}
           aria-describedby="application-assistant-help"
-          onClick={() => setProposal({ ownText, proposal: assistAnswer(ownText, jobTitle) })}
+          onClick={() => {
+            const nextProposal = { ownText, proposal: assistAnswer(ownText, jobTitle) };
+            if (
+              import.meta.env.VITE_PUBLIC_POSTHOG_PROJECT_TOKEN &&
+              import.meta.env.VITE_PUBLIC_POSTHOG_HOST
+            )
+              posthog.capture("application_assistant_proposal_generated", {
+                source_text_length: ownText.length,
+              });
+            setProposal(nextProposal);
+          }}
         >
           Popraw z asystentem
         </Button>
