@@ -26,7 +26,7 @@ export function CvAttachment({
   // An imported custom CV must not be presented as a different prepared PDF.
   if (!filename || source?.cv !== fallbackText)
     return preview || layout === "row" ? (
-      <div className="cv-attachment">
+      <div className="cv-attachment" data-private>
         <div className="cv-file-row">
           <FileText aria-hidden="true" size={24} />
           <div className="cv-file-description">
@@ -37,11 +37,13 @@ export function CvAttachment({
         <p className="cv-text whitespace-pre-wrap text-sm leading-relaxed">{fallbackText}</p>
       </div>
     ) : (
-      <p className="whitespace-pre-wrap text-sm leading-relaxed">{fallbackText}</p>
+      <p className="whitespace-pre-wrap text-sm leading-relaxed" data-private>
+        {fallbackText}
+      </p>
     );
   const href = `${import.meta.env.BASE_URL}cv/${filename}`;
   return (
-    <div className="cv-attachment">
+    <div className="cv-attachment" data-private>
       <div className={layout === "row" ? "cv-file-row" : "space-y-4"}>
         {layout === "row" ? (
           <>
@@ -73,7 +75,11 @@ export function CvAttachment({
         </div>
       </div>
       {preview && (
-        <iframe className="cv-preview" title="Podgląd CV (PDF)" src={`${href}#view=FitH`} />
+        <iframe
+          className="cv-preview ph-no-capture"
+          title="Podgląd CV (PDF)"
+          src={`${href}#view=FitH`}
+        />
       )}
     </div>
   );

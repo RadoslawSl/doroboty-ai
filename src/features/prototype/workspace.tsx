@@ -48,8 +48,12 @@ export function PersonPicker() {
       <div className="grid gap-5 sm:grid-cols-2">
         {people.map((person) => (
           <article key={person.id} className="prototype-panel">
-            <h2 className="text-xl">{person.name}</h2>
-            <p className="my-4 text-muted-foreground">{person.headline}</p>
+            <h2 className="text-xl" data-private>
+              {person.name}
+            </h2>
+            <p className="my-4 text-muted-foreground" data-private>
+              {person.headline}
+            </p>
             <Button
               variant="outline"
               onClick={() => {
@@ -63,7 +67,7 @@ export function PersonPicker() {
                 );
               }}
             >
-              Wejdź jako {person.name}
+              Wejdź jako <bdi data-private>{person.name}</bdi>
             </Button>
           </article>
         ))}
@@ -106,7 +110,9 @@ export function WorkspaceHome() {
   );
   return (
     <>
-      <PageTitle>Witaj, {person.name.split(" ")[0]}</PageTitle>
+      <PageTitle>
+        Witaj, <bdi data-private>{person.name.split(" ")[0]}</bdi>
+      </PageTitle>
       <div className="grid gap-5 sm:grid-cols-3">
         {[
           ["Aplikacje", applications.length],
@@ -174,13 +180,13 @@ export function ProfilePage({ preview = false }: { preview?: boolean }) {
           </Link>
         }
       >
-        {preview ? person.name : "Twój profil"}
+        {preview ? <bdi data-private>{person.name}</bdi> : "Twój profil"}
       </PageTitle>
       {preview ? (
         <div className="prototype-panel space-y-4">
-          <h2>{person.headline}</h2>
+          <h2 data-private>{person.headline}</h2>
           <p>{person.location}</p>
-          <p>{person.bio}</p>
+          <p data-private>{person.bio}</p>
           {person.projects.length > 0 && (
             <section aria-labelledby="preview-projects-heading" className="pt-4">
               <h2 id="preview-projects-heading" className="mb-4">
@@ -322,7 +328,7 @@ export function ApplyPage() {
           <header className="application-form-intro">
             <h2 id="application-form-title">Twoja aplikacja</h2>
             <p>
-              Aplikujesz jako <strong>{person.name}</strong>.
+              Aplikujesz jako <strong data-private>{person.name}</strong>.
             </p>
           </header>
           <section className="application-form-section" aria-labelledby="application-cv-title">
@@ -529,9 +535,13 @@ function CandidateGroups({ applications }: { applications: Application[] }) {
           >
             <header className="candidate-group-header">
               <div>
-                <h2 id={headingId}>{name}</h2>
+                <h2 id={headingId} data-private>
+                  {name}
+                </h2>
                 {candidate?.headline && (
-                  <p className="text-muted-foreground">{candidate.headline}</p>
+                  <p className="text-muted-foreground" data-private>
+                    {candidate.headline}
+                  </p>
                 )}
               </div>
               <span className="candidate-group-count">{applicationCount(items.length)}</span>
@@ -543,7 +553,6 @@ function CandidateGroups({ applications }: { applications: Application[] }) {
                     <Link
                       className="text-lg font-semibold text-[var(--gui-link)]"
                       to={`/app/kandydaci/${a.id}`}
-                      aria-label={`${name}: ${a.jobTitle}`}
                     >
                       {a.jobTitle}
                     </Link>

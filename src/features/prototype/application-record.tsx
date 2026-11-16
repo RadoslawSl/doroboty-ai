@@ -54,12 +54,14 @@ export function ApplicationRecord({
             {candidate ? "Moje aplikacje" : "Kandydaci"}
           </BackLink>
           <span aria-hidden="true">/</span>
-          <span aria-current="page">{title}</span>
+          <bdi aria-current="page" data-private={candidate ? undefined : ""}>
+            {title}
+          </bdi>
         </nav>
-        <h1>{title}</h1>
+        <h1 data-private={candidate ? undefined : ""}>{title}</h1>
         <div className="record-meta">
           <span>
-            {context} · {companyName}
+            <bdi data-private={candidate ? "" : undefined}>{context}</bdi> · {companyName}
           </span>
           <span className="record-stage" tabIndex={-1} ref={statusRef}>
             {stageLabels[application.stage]}
@@ -84,7 +86,7 @@ export function ApplicationRecord({
               content: answerContent ?? (
                 <>
                   <h3>Przesłana aplikacja</h3>
-                  <p>{application.answer}</p>
+                  <p data-private>{application.answer}</p>
                 </>
               ),
             },

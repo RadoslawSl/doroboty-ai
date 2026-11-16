@@ -49,7 +49,7 @@ export function ApplicationAssistant({
       {proposal && (
         <div className="assistant-proposal" aria-labelledby="assistant-proposal-title">
           <h4 id="assistant-proposal-title">Propozycja asystenta</h4>
-          <p>
+          <p data-private>
             <MarkedAnswer text={proposal.proposal} assistant={proposal} />
           </p>
           <p className="application-help">Wyszarzone zdania dopisał asystent.</p>

@@ -96,8 +96,9 @@ export function ContactPage() {
           <CheckCircle2 aria-hidden="true" className="size-8" />
           <h2>Dziękujemy, wiadomość gotowa</h2>
           <p>
-            W prawdziwym portalu odpowiedź przyszłaby na adres <strong>{sentTo}</strong>. To
-            prototyp: formularz niczego nie wysyła ani nie zapisuje.
+            W prawdziwym portalu odpowiedź przyszłaby na adres{" "}
+            <strong data-private>{sentTo}</strong>. To prototyp: formularz niczego nie wysyła ani
+            nie zapisuje.
           </p>
           <div className="flex flex-wrap gap-3">
             <Button

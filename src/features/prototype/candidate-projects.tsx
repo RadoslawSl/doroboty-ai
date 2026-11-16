@@ -24,7 +24,7 @@ export function ProjectList({ projects }: { projects: Project[] }) {
 
 function ProjectBody({ project }: { project: Project }) {
   return (
-    <>
+    <div data-private>
       <h3>{project.name}</h3>
       <p className="project-meta">
         <span className="project-involvement" data-involvement={project.involvement}>
@@ -42,7 +42,7 @@ function ProjectBody({ project }: { project: Project }) {
           <dd>{project.result}</dd>
         </div>
       </dl>
-    </>
+    </div>
   );
 }
 

@@ -151,10 +151,12 @@ export function Shell() {
               DoRoboty.ai
             </Link>
             <div className="workspace-label">
-              <span className="workspace-avatar">{person.name[0]}</span>
+              <bdi className="workspace-avatar" data-private>
+                {person.name[0]}
+              </bdi>
               <div>
-                <strong>{person.name}</strong>
-                <span>{person.headline}</span>
+                <strong data-private>{person.name}</strong>
+                <bdi data-private>{person.headline}</bdi>
               </div>
             </div>
             <nav id="workspace-nav" aria-label="Panel użytkownika">
@@ -195,7 +197,9 @@ export function Shell() {
                     ? "Strefa pracodawcy"
                     : "Case study"}
               </span>
-              <Link to="/auth/sign-in">{person.name}</Link>
+              <Link to="/auth/sign-in">
+                <bdi data-private>{person.name}</bdi>
+              </Link>
             </div>
             <main id="main" ref={main} tabIndex={-1} className="main-content outline-none">
               {content}

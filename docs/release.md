@@ -58,8 +58,9 @@ The facilitator opens the link 30 minutes before every E1 session. If the site d
 
 ## Capturing errors during a session
 
-The app has no remote error logging. Published builds send anonymous PostHog EU page views and
-clicks (FEATURES.md SYS-03), not console errors. To capture a problem:
+The app has no remote error logging. Published builds send anonymous PostHog EU page views,
+clicks and masked session recordings (FEATURES.md SYS-03), not console errors. To capture a
+problem:
 
 - Note the screen (hash URL), the persona and the step the participant was taking.
 - Open the browser console (F12 → Console) and copy only the red error message. Do not copy
@@ -79,3 +80,8 @@ Rule agreed with the project owner on 2026-11-14 and added to the E1 session scr
   results, the facilitator clears the state before the next participant: "Nowa sesja" in the E1
   prototype, and in this app `#/app/settings` → "Resetuj scenariusz" (or close the private
   window). The facilitator confirms the start screen is empty.
+- Session recording. The published prototype records the screen session in PostHog EU: input
+  values and text marked `data-private` are masked, the CV preview is blocked, nothing is stored
+  in the browser. The facilitator tells participants in the welcome that the session is
+  recorded anonymously for product research. New screens that show a person's data must mark
+  it with `data-private` (see `src/lib/analytics.ts`).

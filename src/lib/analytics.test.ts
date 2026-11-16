@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { analyticsEnabled, trackUrlChanges } from "./analytics";
+import { PRIVATE_SELECTOR, analyticsEnabled, posthogOptions, trackUrlChanges } from "./analytics";
 
 describe("analyticsEnabled", () => {
   it("is off outside production builds", () => {
@@ -48,5 +48,26 @@ describe("trackUrlChanges", () => {
     listeners.popstate();
     listeners.hashchange();
     expect(count).toBe(3);
+  });
+});
+
+describe("posthogOptions", () => {
+  const options = posthogOptions();
+
+  it("keeps private areas out of autocapture", () => {
+    expect(options.autocapture.css_selector_ignorelist).toContain(PRIVATE_SELECTOR);
+    expect(options.autocapture.capture_copied_text).toBe(false);
+  });
+
+  it("records sessions with inputs and private text masked", () => {
+    expect(options.disable_session_recording).toBe(false);
+    expect(options.session_recording.maskAllInputs).toBe(true);
+    expect(options.session_recording.maskTextSelector).toBe(PRIVATE_SELECTOR);
+    expect(options.session_recording.blockSelector).toContain("iframe");
+    expect(options.enable_recording_console_log).toBe(false);
+  });
+
+  it("stores nothing in the browser", () => {
+    expect(options.persistence).toBe("memory");
   });
 });

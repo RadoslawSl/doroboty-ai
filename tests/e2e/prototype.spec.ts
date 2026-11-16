@@ -141,7 +141,8 @@ test("published job → saved offer/draft → submitted application → employer
   await choose(page, "Karolina Wiśniewska");
   await page.getByRole("link", { name: "Kandydaci", exact: true }).click();
   await page
-    .getByRole("link", { name: "Anna Kowalska: Product Designer do automatyzacji", exact: true })
+    .getByRole("article", { name: "Anna Kowalska", exact: true })
+    .getByRole("link", { name: "Product Designer do automatyzacji", exact: true })
     .click();
   await page
     .getByLabel("Notatka rekrutacyjna (widoczna pracodawcy)")
@@ -1025,8 +1026,19 @@ test("assistant keeps the own-contribution sentence and the employer card shows 
 
   await choose(page, "Karolina Wiśniewska");
   await page.goto("/#/app/kandydaci");
-  await page.getByRole("link", { name: "Anna Kowalska: AI Product Manager", exact: true }).click();
+  // Analytics privacy (SYS-03): the candidate name is only in the private group heading,
+  // never in the link's text or attributes.
+  const candidateGroup = page.getByRole("article", { name: "Anna Kowalska", exact: true });
+  await expect(candidateGroup.locator("h2[data-private]")).toHaveText("Anna Kowalska");
+  const candidateLink = candidateGroup.getByRole("link", {
+    name: "AI Product Manager",
+    exact: true,
+  });
+  await expect(candidateLink).not.toHaveAttribute("aria-label");
+  await candidateLink.click();
+  await expect(page.locator("h1[data-private]")).toHaveText("Anna Kowalska");
   const card = page.getByRole("region", { name: "Co kandydat zrobił sam" });
+  await expect(card.locator("blockquote[data-private]")).toContainText(own);
   await expect(card).toContainText(`„${own}”`);
   await expect(card).toContainText("Opisuje własny wkład w działające rozwiązanie");
   await expect(page.locator(".assistant-sentence")).toHaveCount(2);
@@ -1138,9 +1150,7 @@ test("employer candidates list groups every application of a person to the compa
   await expect(marek).toContainText("1 aplikacja");
 
   await page.getByLabel("Szukaj kandydata lub oferty").fill("");
-  await marek
-    .getByRole("link", { name: "Marek Nowak: AI Operations Specialist", exact: true })
-    .click();
+  await marek.getByRole("link", { name: "AI Operations Specialist", exact: true }).click();
   await expect(page).toHaveURL(/#\/app\/kandydaci\/.+/);
   await expect(
     page.getByRole("heading", { level: 1, name: "Marek Nowak", exact: true }),

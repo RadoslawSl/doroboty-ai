@@ -44,7 +44,9 @@ export function ContributionCard({
     <section className="contribution-card" aria-labelledby="contribution-title">
       <h2 id="contribution-title">Co kandydat zrobił sam</h2>
       {finding.sentence ? (
-        <blockquote className="contribution-quote">„{finding.sentence}”</blockquote>
+        <blockquote className="contribution-quote" data-private>
+          „{finding.sentence}”
+        </blockquote>
       ) : (
         <p className="contribution-quote contribution-empty">
           W odpowiedzi nie ma zdania o konkretnej pracy kandydata.

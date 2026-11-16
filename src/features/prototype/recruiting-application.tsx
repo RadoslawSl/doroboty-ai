@@ -54,7 +54,7 @@ export function RecruitingApplication({ application }: { application: Applicatio
                 <p className="record-caption">
                   Kandydat użył asystenta. Wyszarzone zdania dopisał asystent.
                 </p>
-                <p>
+                <p data-private>
                   <MarkedAnswer text={application.answer} assistant={assistant} />
                 </p>
                 <div className="record-compare">
@@ -73,12 +73,12 @@ export function RecruitingApplication({ application }: { application: Applicatio
                     aria-labelledby="candidate-own-text-title"
                   >
                     <h4 id="candidate-own-text-title">Tekst napisany przez kandydata</h4>
-                    <p>{assistant.ownText}</p>
+                    <p data-private>{assistant.ownText}</p>
                   </section>
                 )}
               </>
             ) : (
-              <p>{application.answer}</p>
+              <p data-private>{application.answer}</p>
             )}
           </>
         }
@@ -142,7 +142,7 @@ export function RecruitingApplication({ application }: { application: Applicatio
 /** Current public profile of the candidate, as the employer sees it (not a snapshot). */
 function CandidateProfile({ person }: { person: Person }) {
   return (
-    <div className="candidate-profile">
+    <div className="candidate-profile" data-private>
       <h3>Profil kandydata</h3>
       <p className="record-caption">Aktualny profil kandydata, nie stan z dnia aplikowania.</p>
       <p className="candidate-profile-headline">{person.headline}</p>
