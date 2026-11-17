@@ -3,7 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ApplicationRecord } from "./application-record";
 import { ProjectList } from "./candidate-projects";
-import { ContributionCard, MarkedAnswer } from "./contribution-card";
+import { track } from "@/lib/analytics";
+import { ContributionCard, MarkedAnswer, contributionKind } from "./contribution-card";
 import { nextStages, stageLabels, type Application, type Person } from "./model";
 import { usePrototype } from "./store";
 
@@ -18,6 +19,7 @@ export function RecruitingApplication({ application }: { application: Applicatio
   const company = state.companies.find((item) => item.id === application.companyId);
   const availableStages = nextStages[application.stage];
   const candidate = state.people.find((person) => person.id === application.candidateId);
+  const kind = contributionKind(application.answer, assistant);
 
   useLayoutEffect(() => {
     if (pendingFocus.current) {
@@ -45,7 +47,13 @@ export function RecruitingApplication({ application }: { application: Applicatio
               ]
             : []
         }
-        lead={<ContributionCard answer={application.answer} assistant={assistant} />}
+        lead={
+          <ContributionCard
+            applicationId={application.id}
+            answer={application.answer}
+            assistant={assistant}
+          />
+        }
         answerContent={
           <>
             <h3>Przesłana aplikacja</h3>
@@ -61,7 +69,10 @@ export function RecruitingApplication({ application }: { application: Applicatio
                   <Button
                     variant="outline"
                     aria-expanded={comparing}
-                    onClick={() => setComparing((value) => !value)}
+                    onClick={() => {
+                      track("compare_clicked", { open: !comparing, contribution_kind: kind });
+                      setComparing((value) => !value);
+                    }}
                   >
                     {comparing ? "Ukryj tekst kandydata" : "Porównaj z tekstem kandydata"}
                   </Button>
@@ -93,6 +104,9 @@ export function RecruitingApplication({ application }: { application: Applicatio
                     variant={stage === "rejected" ? "outline" : "default"}
                     onClick={() => {
                       if (run({ type: "stage", applicationId: application.id, stage, note })) {
+                        if (stage === "interview_invited") {
+                          track("candidate_invited", { contribution_kind: kind });
+                        }
                         setNote("");
                         setAnnouncement(`Zapisano etap: ${stageLabels[stage]}.`);
                         pendingFocus.current = true;

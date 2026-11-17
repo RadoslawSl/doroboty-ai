@@ -1,4 +1,11 @@
-import { contributionLabels, findContribution, markAssistantSentences } from "./contribution";
+import { useEffect } from "react";
+import { track } from "@/lib/analytics";
+import {
+  contributionLabels,
+  findContribution,
+  markAssistantSentences,
+  type ContributionKind,
+} from "./contribution";
 import type { AssistantRecord } from "./model";
 
 /** Sent answer split into sentences; assistant sentences are muted and named for screen readers. */
@@ -31,15 +38,27 @@ export function candidateText(text: string, assistant?: AssistantRecord) {
     .join(" ");
 }
 
+/** Card category for an application (the same rule the card shows). */
+export function contributionKind(answer: string, assistant?: AssistantRecord): ContributionKind {
+  return findContribution(candidateText(answer, assistant)).kind;
+}
+
 /** "Co kandydat zrobił sam" card shown at the top of every employer application view. */
 export function ContributionCard({
+  applicationId,
   answer,
   assistant,
 }: {
+  applicationId: string;
   answer: string;
   assistant?: AssistantRecord;
 }) {
   const finding = findContribution(candidateText(answer, assistant));
+  const kind = finding.kind;
+  useEffect(() => {
+    // One event per opened application (applicationId), not per re-render.
+    track("contribution_card_viewed", { contribution_kind: kind });
+  }, [applicationId, kind]);
   return (
     <section className="contribution-card" aria-labelledby="contribution-title">
       <h2 id="contribution-title">Co kandydat zrobił sam</h2>

@@ -1,5 +1,13 @@
-import { describe, expect, it } from "vitest";
-import { PRIVATE_SELECTOR, analyticsEnabled, posthogOptions, trackUrlChanges } from "./analytics";
+import { beforeEach, describe, expect, it } from "vitest";
+import {
+  PRIVATE_SELECTOR,
+  analyticsEnabled,
+  connectTracking,
+  posthogOptions,
+  resetTracking,
+  track,
+  trackUrlChanges,
+} from "./analytics";
 
 describe("analyticsEnabled", () => {
   it("is off outside production builds", () => {
@@ -69,5 +77,38 @@ describe("posthogOptions", () => {
 
   it("stores nothing in the browser", () => {
     expect(options.persistence).toBe("memory");
+  });
+});
+
+describe("track", () => {
+  beforeEach(() => resetTracking());
+
+  it("sends events captured before PostHog loaded, in order", () => {
+    const sent: Array<[string, Record<string, unknown>]> = [];
+    track("contribution_card_viewed", { contribution_kind: "own" });
+    track("candidate_invited", { contribution_kind: "none" });
+    connectTracking((event, properties) => sent.push([event, properties]));
+    track("compare_clicked", { open: true, contribution_kind: "preparation" });
+    expect(sent).toEqual([
+      ["contribution_card_viewed", { contribution_kind: "own" }],
+      ["candidate_invited", { contribution_kind: "none" }],
+      ["compare_clicked", { open: true, contribution_kind: "preparation" }],
+    ]);
+  });
+
+  it("drops events where analytics is off", () => {
+    track("candidate_invited", { contribution_kind: "own" });
+    connectTracking(null);
+    track("candidate_invited", { contribution_kind: "own" });
+    const sent: string[] = [];
+    connectTracking((event) => sent.push(event));
+    expect(sent).toEqual([]);
+  });
+
+  it("never throws when the client fails", () => {
+    connectTracking(() => {
+      throw new Error("offline");
+    });
+    expect(() => track("candidate_invited", { contribution_kind: "own" })).not.toThrow();
   });
 });
